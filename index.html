@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+        html,
+        body,
+        div,p{
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+        }
+
+        #box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background-color: yellowgreen;
+            margin: 50px auto;
+        }
+
+        #mark {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background-color: #ADD8E6;
+            opacity: 0.6;
+            filter: alpha(opacity=60);
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <!--<div id="mark"></div>-->
+</div>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript">
+    /*let box = document.getElementById('box');
+    let mark = document.createElement('p');
+    mark.id = 'mark';
+    let l = $.offset(box).left;
+    let t = $.offset(box).top;
+    box.onmouseenter= function () {
+        this.appendChild(mark);
+        box.onmousemove = function (e) {
+            $.css(mark,{left:e.clientX-l,top:e.clientY-t});
+        };
+    };
+    box.onmouseleave = function () {
+      this.removeChild(mark);
+    };*/
+    //onmouseenter _onmouseleave 没有事件冒泡
+
+    let box = document.getElementById('box');
+    let boxW = box.offsetWidth;
+    let boxH = box.offsetHeight;
+    let boxL = $.offset(box).left;
+    let boxT = $.offset(box).top;
+    let minL = 0,minT = 0,maxL = 0,maxT = 0;
+    let markW = 0, markH = 0;
+    let L = 0, T = 0;
+    let mark = document.createElement('p');
+    mark.id = 'mark';
+
+    box.onmouseenter = function () {
+      this.appendChild(mark);
+      maxL = boxW-mark.offsetWidth;
+      maxT = boxH-mark.offsetHeight;
+      this.onmousemove = function (e) {
+          L = e.clientX-boxL-mark.offsetWidth/2;
+          T = e.clientY-boxT-mark.offsetHeight/2;
+          L = L <= minL ? minL : L >= maxL ? maxL : L;
+          T = T <= minT ? minT : T >= maxT ? maxT : T;
+          $.css(mark,{left:L,top:T});
+      }
+    };
+    box.onmouseleave = function () {
+      this.removeChild(mark);
+    };
+
+    /*
+    * mouseover 和mouseenter的区别
+    * mouseover ：鼠标滑到元素上
+    * mouseenter：鼠标进入元素里面
+    * [1]
+    * mouseover存在事件的冒泡传播机制，而mouseenter浏览器把它的事件冒泡传播机制阻止了
+    * [2]
+    * 鼠标从父元素进入到子元素，
+    * over：先触发父元素的mouseout(因为鼠标已经不在父元素上了，mouseover本意是鼠标在元素上才算触发)，再触发子元素的mouseover(由于冒泡传播机制导致父元素的mouseover也被重新触发了)
+    * enter：进入，从大盒子进入到小盒子，没有触发大盒子的mouseleaver事件，但是也触发了小盒子的mouseenter，浏览器阻止了它的冒泡传播，所以大盒子的mouseenter不会被触发
+    * */
+</script>
+</body>
+</html>
